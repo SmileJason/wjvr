@@ -231,3 +231,22 @@ LOGGING = {
 # 设置user model
 AUTH_USER_MODEL = "vrauth.VRAuth"
 
+# cache配置
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'options': {
+            'MAX_ENTRIES': 1024,
+        }
+    },
+    'memcache': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        # 'LOCATION': 'unix:/home/billvsme/memcached.sock',
+        'LOCATION': '127.0.0.1:11211',
+        'options': {
+            'MAX_ENTRIES': 1024,
+        }
+    },
+}
+
