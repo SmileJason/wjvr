@@ -15,6 +15,6 @@ def get_vrmodes(request):
 	vrmodes = VRMode.objects.all()[(page-1)*size:(page)*size]
 	data = []
 	for vr in vrmodes.all():
-		data.append({'cover': vr.cover.url, 'title': vr.title, 'intro': vr.intro, 'vrlink': vr.vrlink})
+		data.append({'cover': 'https://wjvr.json666.cn'+vr.cover.url, 'title': vr.title, 'intro': vr.intro, 'vrlink': 'https://wjvr.json666.cn'+vr.vrlink})
 	result = {'data': data}
 	return HttpResponse(json.dumps(result), content_type='application/json')
