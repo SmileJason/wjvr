@@ -9,30 +9,36 @@ from xadmin import views
 from common import LOG
 
 class VRModeAdmin(object):
-    fieldsets = (
-        (u'基本信息', {'fields': ('title', 'intro', 'create_time')}),
-        (u'文件管理', {'fields': ('cover', 'vrzip', 'vrlink')}),
-    )
+	list_display = ('title', 'intro')
+	search_fields = ('title', 'intro')
+	fieldsets = (
+		(u'基本信息', {'fields': ('title', 'intro', 'create_time')}),
+		(u'文件管理', {'fields': ('cover', 'vrzip', 'vrlink')}),
+	)
+	show_detail_fields = ['title', ]
+	# data_charts = {
+ #    "vrmode": {'title': u"VR方案统计", "x-field": "create_time", "y-field": ("create_time",),
+ #                   "order": ('create_time',)},
+ #    }
 
-    @transaction.atomic
-    def save_models(self):
-    	obj = self.new_obj
-    	# obj.save()
-    	super(VRModeAdmin, self).save_models()
-    	if obj.vrzip:
-    		file = obj.vrzip.path
-    		if os.path.exists(file):
-    			name = os.path.basename(file)
-    			path = './media/uploads/vrzip/'+name[:-4]
-    			if not os.path.exists(path):
+	@transaction.atomic
+	def save_models(self):
+		obj = self.new_obj
+		super(VRModeAdmin, self).save_models()
+		if obj.vrzip:
+			file = obj.vrzip.path
+			if os.path.exists(file):
+				name = os.path.basename(file)
+				path = './media/uploads/vrzip/'+name[:-4]
+				if not os.path.exists(path):
 					z = zipfile.ZipFile(file, 'r')
 					z.extractall(path='./media/uploads/vrzip/'+name[:-4])
 					z.close()
 					obj.vrlink = '/media/	uploads/vrzip/'+name[:-4]+'/vtour/vtour.html'
 					obj.save()
 
-    @transaction.atomic
-    def delete_models(self, queryset):
+	@transaction.atomic
+	def delete_models(self, queryset):
 		for vr in queryset.all():
 			file = vr.cover.path
 			vrzip = vr.vrzip

@@ -19,6 +19,10 @@ class GlobalSetting(object):
     site_title = "唯杰VR+"
     site_footer = "https://blog.json666.cn/"
     menu_style = "accordion"
+    # global_search_models = [V_UserInfo, UserDistrict]
+    # global_models_icon = {
+    #     V_UserInfo: "glyphicon glyphicon-user", UserDistrict: "fa fa-cloud"
+    # }
  
 xadmin.site.register(views.CommAdminView, GlobalSetting)
 
@@ -35,5 +39,5 @@ class VRAuthAdmin(object):
         (u'权限', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (u'时间信息', {'fields': ('last_login', 'date_joined')}),
     )
-xadmin.site.unregister(Group)
+# xadmin.site.unregister(Group)
 # xadmin.site.register(VRAuth, VRAuthAdmin)

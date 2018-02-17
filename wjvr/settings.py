@@ -53,6 +53,7 @@ INSTALLED_APPS = (
 
     'vrauth',
     'vrmode',
+    'api',
 )
 
 MIDDLEWARE_CLASSES = (

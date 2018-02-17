@@ -18,8 +18,6 @@ class string_with_title(str):
     __deepcopy__ = lambda self, memodict: self
 
 
-# Create your models here.
-
 class VRAuth(AbstractUser):
     img = models.CharField(max_length=200, default='/static/img/avatar0.png',
                            verbose_name=u'头像地址')

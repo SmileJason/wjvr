@@ -1,3 +1,4 @@
+#coding: utf-8
 from django.conf.urls import include, url
 from django.conf import settings
 from django.contrib import admin
@@ -13,6 +14,8 @@ urlpatterns = [
     url(r'^xadmin/vrmode/vrmode/(?P<vrmode_id>\d+)/delete/$', 'vrmode.views.admindelete', name='vrmoade-admin-delete'),
 
     url(r'^xadmin/', xadmin.site.urls),
+
+    url(r'^api/', include('api.urls')),
 ]
 
 if settings.DEBUG:
