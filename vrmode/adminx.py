@@ -3,7 +3,7 @@ import os
 import shutil
 import zipfile
 import xadmin
-from vrmode.models import VRMode
+from vrmode.models import VRMode, VRBanner, PageType, Page
 from django.db import transaction
 from xadmin import views
 from common import LOG
@@ -63,19 +63,48 @@ class VRModeAdmin(object):
 		# obj.save()
 		# super().save_models()
 
-	# @transaction.atomic
-	# def delete_models(self, queryset):
-		# LOG.error('+++++++++++++')
-		# for vr in queryset.all():
-		# 	LOG.error(vr.title)
-		# 	file = vr.cover.path
-		# 	if os.path.exists(file):
-		# 		LOG.error('--------------')
-		# 		os.remove(file)
-		# 	if vr.vrzip:
-		# 		LOG.error('-------adsadsa---')
-		# 		file = vr.vrzip.path
-		# 		if os.path.exists(file):
-		# 			os.remove(file)
-
 xadmin.site.register(VRMode, VRModeAdmin)
+
+
+class VRBannerAdmin(object):
+	list_display = ('title', 'intro')
+	search_fields = ('title', 'intro')
+	fieldsets = (
+		(u'基本信息', {'fields': ('title', 'intro', 'create_time')}),
+		(u'文件管理', {'fields': ('cover', 'vrlink')}),
+	)
+	show_detail_fields = ['title', ]
+
+	@transaction.atomic
+	def delete_models(self, queryset):
+		for vr in queryset.all():
+			file = vr.cover.path
+			if os.path.exists(file):
+				os.remove(file)
+		super(VRBannerAdmin, self).delete_models(queryset)
+
+xadmin.site.register(VRBanner, VRBannerAdmin)
+
+class PageTypeAdmin(object):
+	list_display = ('name', 'status', 'order')
+	list_filter = ('status', )
+	search_fields = ('name', )
+	fieldsets = (
+		(u'基本信息', {'fields': ('name', 'status', 'order')}),
+	)
+	show_detail_fields = ['title', ]
+
+xadmin.site.register(PageType, PageTypeAdmin)
+
+class PageAdmin(object):
+	list_display = ('title', 'intro', 'type')
+	list_filter = ('status', 'type', )
+	search_fields = ('title', 'intro')
+	style_fields = {'content':'ueditor'}
+	show_detail_fields = ['title', ]
+	# add_form_template = './xadmin/vrmode/page/change_form.html'
+	# change_form_template = './xadmin/vrmode/page/change_form.html'
+
+xadmin.site.register(Page, PageAdmin)
+
+

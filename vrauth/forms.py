@@ -2,7 +2,7 @@
 from django import forms
 from vrauth.models import VRAuth
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.models import get_current_site
+# from django.contrib.sites.models import get_current_site
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.core.mail import send_mail
@@ -136,9 +136,11 @@ class VRAuthPasswordRestForm(forms.Form):
     def save(self, from_email=None, request=None,
              token_generator=default_token_generator):
         email = self.cleaned_data['email']
-        current_site = get_current_site(request)
-        site_name = current_site.name
-        domain = current_site.domain
+        # current_site = get_current_site(request)
+        # site_name = current_site.name
+        # domain = current_site.domain
+        site_name = request.user
+        domain = request.get_host()
         uid = base64.urlsafe_b64encode(
             force_bytes(self.user.pk)
         ).rstrip(b'\n=')

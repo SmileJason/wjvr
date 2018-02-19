@@ -24,6 +24,4 @@ class VRAuth(AbstractUser):
     intro = models.CharField(max_length=200, blank=True, null=True,
                              verbose_name=u'简介')
 
-    class Meta(AbstractUser.Meta):
-        app_label = string_with_title('vrauth', u"用户管理")
 

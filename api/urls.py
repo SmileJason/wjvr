@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from api.views import get_vrmodes
+from api.views import get_vrmodes, get_banners
 
 urlpatterns = [
 
-    url(r'^getvrs/$', get_vrmodes),
+    url(r'^getModes/$', get_vrmodes),
+
+    url(r'^getBanners/$', get_banners),
 
 ]

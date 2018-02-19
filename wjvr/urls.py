@@ -11,11 +11,16 @@ urlpatterns = [
 
     # url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^xadmin/vrmode/vrmode/(?P<vrmode_id>\d+)/delete/$', 'vrmode.views.admindelete', name='vrmoade-admin-delete'),
+    url(r'^xadmin/vrmode/vrmode/(?P<vrmode_id>\d+)/delete/$', 'vrmode.views.vrmode_delete', name='vrmoade-admin-delete'),
+
+    url(r'^xadmin/vrmode/vrbanner/(?P<vrbanner_id>\d+)/delete/$', 'vrmode.views.vrbanner_delete', name='vrbanner-admin-delete'),
 
     url(r'^xadmin/', xadmin.site.urls),
 
     url(r'^api/', include('api.urls')),
+
+    # url(r'^ueditor/', include('DjangoUeditor.utils')),
+    url(r'^ueditor/', include('DjangoUeditor.urls' )),
 ]
 
 if settings.DEBUG:
