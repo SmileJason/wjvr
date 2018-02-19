@@ -1,4 +1,7 @@
 django==1.9
 django-import-export
 future
-DjangoUeditor
+lxml
+xmltodict
+pycrypto
+python-weixin
