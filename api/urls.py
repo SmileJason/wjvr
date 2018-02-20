@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from api.views import get_vrmodes, get_banners, get_pagetypes, get_pages, get_pagedetail, weixin_login, check_session, check_post
+from api.views import get_vrmodes, get_banners, get_pagetypes, get_pages, get_pagedetail, weixin_login, check_session, check_post, set_session
 
 urlpatterns = [
 
@@ -24,5 +24,7 @@ urlpatterns = [
     url(r'^checkSession/$', check_session),
 
     url(r'^checkPost/$', check_post),
+
+    url(r'^setSession/$', set_session),
 
 ]

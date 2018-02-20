@@ -124,3 +124,15 @@ def check_session(request):
 @csrf_exempt
 def check_post(request):
 	return HttpResponse(json.dumps({'request': request.POST, 'code': request.POST['code']}), content_type='application/json')
+
+@csrf_exempt
+def set_session(request):
+	code = request.POST['code']
+	value = request.POST['codevalue']
+	request.session[code+'session_key'] = value
+	request.session.set_expiry(30*24*60*60)
+	return HttpResponse(json.dumps({'request': request.POST}), content_type='application/json')
+
+
+
+
