@@ -123,4 +123,4 @@ def check_session(request):
 
 @csrf_exempt
 def check_post(request):
-	return HttpResponse(json.dumps({'request': request.POST, 'code': 'request': request.POST['code']}), content_type='application/json')
+	return HttpResponse(json.dumps({'request': request.POST, 'code': request.POST['code']}), content_type='application/json')
