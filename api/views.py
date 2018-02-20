@@ -78,7 +78,7 @@ WXAPP_APPID = 'wxe986c48a87b379cd'
 
 @csrf_exempt
 def weixin_login(request):
-    code = request.POST.get('code')
+    code = request.POST['code']
     if not code:
     	result = {'status':-1, 'msg': u'code参数不正确'}
     	return HttpResponse(json.dumps(result), content_type='application/json')
@@ -105,7 +105,7 @@ def weixin_login(request):
 
 @csrf_exempt
 def check_session(request):
-	code = request.POST.get('code')
+	code = request.POST['code']
 	if code:
 		session_key = request.session[code+'session_key']
 		openid = request.session[code+'openid']
