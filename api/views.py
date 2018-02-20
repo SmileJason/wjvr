@@ -138,7 +138,9 @@ def set_session(request):
 @csrf_exempt
 def get_session(request):
 	code = request.POST['code']
-	codevalue = request.session[code+'session_key']
+	request.session[code+'session_key'] = 'AAAA'
+	key = code+'session_key'
+	codevalue = request.session[key]
 	# codevalue = request.session[code]
 	return HttpResponse(json.dumps({'codevalue': codevalue}), content_type='application/json')
 
