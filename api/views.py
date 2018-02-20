@@ -125,19 +125,20 @@ def check_session(request):
 def check_post(request):
 	return HttpResponse(json.dumps({'request': request.POST, 'code': request.POST['code']}), content_type='application/json')
 
-@csrf_exempt
+# @csrf_exempt
 def set_session(request):
-	code = request.POST['code']
-	value = request.POST['codevalue']
-	# code = request.GET.get('code')
-	# value = request.GET.get('codevalue')
+	# code = request.POST['code']
+	# value = request.POST['codevalue']
+	code = request.GET.get('code')
+	value = request.GET.get('codevalue')
 	request.session[code+'session_key'] = value
 	# request.session.set_expiry(30*24*60*60)
-	return HttpResponse(json.dumps({'request': request.POST, 'session': request.session[code+'session_key']}), content_type='application/json')
+	return HttpResponse(json.dumps({'request': request.GET, 'session': request.session[code+'session_key']}), content_type='application/json')
 
-@csrf_exempt
+# @csrf_exempt
 def get_session(request):
-	code = request.POST['code']
+	# code = request.POST['code']
+	code = request.GET.get('code')
 	# request.session[code+'session_key'] = 'AAAA'
 	key = code+'session_key'
 	# codevalue = request.session[key]
