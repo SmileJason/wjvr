@@ -121,3 +121,8 @@ def check_session(request):
 	else:
 		result = {'status':-1, 'msg': u'code参数不正确'}
 		return HttpResponse(json.dumps(result), content_type='application/json')
+
+@csrf_exempt
+def check_post(request):
+	LOG.error(request.POST)
+	return HttpResponse(json.dumps({'request': request.POST}), content_type='application/json')
