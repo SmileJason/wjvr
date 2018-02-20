@@ -92,7 +92,7 @@ def weixin_login(request):
 		# encrypted_data 包括敏感数据在内的完整用户信息的加密数据
 		# iv 加密算法的初始向量
 		# 这两个参数需要js获取
-		user_info = crypt.decrypt(encrypted_data, iv)
+		# user_info = crypt.decrypt(encrypted_data, iv)
 		if session_key:
 			request.session[code+'session_key'] = session_key
 			request.session[code+'openid'] = openid
