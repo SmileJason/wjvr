@@ -96,7 +96,7 @@ def weixin_login(request):
 		if session_key:
 			request.session[code+'session_key'] = session_key
 			request.session[code+'openid'] = openid
-			request.session.set_expiry(30*24*60*60)
+			# request.session.set_expiry(30*24*60*60)
 			result = {'status':0, '_3rd_session': code, 'msg': u'登录成功'}
 			return HttpResponse(json.dumps(result), content_type='application/json')
 		else:
@@ -132,14 +132,14 @@ def set_session(request):
 	# code = request.GET.get('code')
 	# value = request.GET.get('codevalue')
 	request.session[code+'session_key'] = value
-	request.session.set_expiry(30*24*60*60)
+	# request.session.set_expiry(30*24*60*60)
 	return HttpResponse(json.dumps({'request': request.POST, 'session': request.session[code+'session_key']}), content_type='application/json')
 
 @csrf_exempt
 def get_session(request):
 	code = request.POST['code']
-	# codevalue = request.session[code+'session_key']
-	codevalue = request.session[code]
+	codevalue = request.session[code+'session_key']
+	# codevalue = request.session[code]
 	return HttpResponse(json.dumps({'codevalue': codevalue}), content_type='application/json')
 
 
