@@ -143,7 +143,7 @@ def get_session(request):
 	# codevalue = request.session[key]
 	codevalue = request.session.get(key, 'BBBB')
 	# codevalue = request.session[code]
-	return HttpResponse(json.dumps({'codevalue': codevalue}), content_type='application/json')
+	return HttpResponse(json.dumps({'codevalue': request.session.keys()}), content_type='application/json')
 
 
 
