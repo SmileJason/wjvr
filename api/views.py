@@ -133,11 +133,11 @@ def set_session(request):
 	# value = request.GET.get('codevalue')
 	request.session[code+'session_key'] = value
 	request.session.set_expiry(30*24*60*60)
-	return HttpResponse(json.dumps({'request': request.GET}), content_type='application/json')
+	return HttpResponse(json.dumps({'request': request.POST}), content_type='application/json')
 
 @csrf_exempt
 def get_session(request):
-	code = request.GET.get('code')
+	code = request.POST['code']
 	codevalue = request.session[code+'session_key']
 	return HttpResponse(json.dumps({'codevalue': codevalue}), content_type='application/json')
 
