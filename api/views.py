@@ -110,16 +110,20 @@ def weixin_login(request):
     	result = {'status':-1, 'msg': u'code参数不正确'}
     	return HttpResponse(json.dumps(result), content_type='application/json')
     if code:
-		api = WXAPPAPI(appid=APP_ID, app_secret=APP_SECRET)
-		session_info = api.exchange_code_for_session_key(code=code)
-		# 获取session_info 后
-		session_key = session_info.get('session_key')
-		openid = session_info.get('openid')
-		if session_key:
-			result = {'status':0, 'msg': u'登录成功', 'code': code, 'session_key': session_key, 'openid': openid}
-			return HttpResponse(json.dumps(result), content_type='application/json')
-		else:
-			result = {'status':-1, 'msg': u'登录失败'}
+    	try:
+			api = WXAPPAPI(appid=APP_ID, app_secret=APP_SECRET)
+			session_info = api.exchange_code_for_session_key(code=code)
+			# 获取session_info 后
+			session_key = session_info.get('session_key')
+			openid = session_info.get('openid')
+			if session_key:
+				result = {'status':0, 'msg': u'登录成功', 'code': code, 'session_key': session_key, 'openid': openid}
+				return HttpResponse(json.dumps(result), content_type='application/json')
+			else:
+				result = {'status':-1, 'msg': u'登录失败'}
+				return HttpResponse(json.dumps(result), content_type='application/json')
+		except Exception, e:
+			result = {'status':-1, 'msg': u'code异常，登录失败'}
 			return HttpResponse(json.dumps(result), content_type='application/json')
 
 @csrf_exempt
