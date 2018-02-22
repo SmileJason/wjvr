@@ -34,7 +34,7 @@ class VRModeAdmin(object):
 					z = zipfile.ZipFile(file, 'r')
 					z.extractall(path='./media/uploads/vrzip/'+name[:-4])
 					z.close()
-					obj.vrlink = '/media/	uploads/vrzip/'+name[:-4]+'/vtour/vtour.html'
+					obj.vrlink = '/media/uploads/vrzip/'+name[:-4]+'/vtour/tour.html'
 					obj.save()
 
 	@transaction.atomic
