@@ -27,6 +27,7 @@ def get_vrmodes(request):
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
 def get_banners(request):
+	host = request.get_host()
 	page = int(request.GET.get('page', 1))
 	if page < 1:
 		page = 1
@@ -36,7 +37,7 @@ def get_banners(request):
 	banners = VRBanner.objects.all()[(page-1)*size:(page)*size]
 	data = []
 	for vr in banners.all():
-		data.append({'cover': host+vr.cover.url, 'title': vr.title, 'intro': vr.intro, 'vrlink': host+vr.vrlink})
+		data.append({'cover': 'https://'+host+vr.cover.url, 'title': vr.title, 'intro': vr.intro, 'vrlink': 'https://'+host+vr.vrlink})
 	result = {'data': data}
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
