@@ -82,6 +82,8 @@ class Page(models.Model):
     order = models.PositiveIntegerField(verbose_name=u'排序', default=100, help_text=u'从小到大显示,相同顺序按照[显示发布时间]排序')
     time_display = models.DateTimeField(verbose_name=u'显示发布时间')
     content = UEditorField(verbose_name=u'内容', width=600, height=300, toolbars="full", imagePath="course/ueditor/", filePath="course/ueditor/", upload_settings={"imageMaxSize":1204000},default='')
+    view_times = models.IntegerField(default=0)
+    zan_times = models.IntegerField(default=0)
     created_time = models.DateTimeField(verbose_name=u'创建时间', auto_now_add=True)
     last_modified = models.DateTimeField(verbose_name=u'最近更新时间', auto_now=True)
     
