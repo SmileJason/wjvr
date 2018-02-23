@@ -61,7 +61,7 @@ def get_pages(request):
 	pages = Page.objects.filter(status=PAGE_STATUS_ACTIVE, type__id=type).order_by('order')[(page-1)*size:(page)*size]
 	data = []
 	for page in pages.all():
-		data.append({'title': page.title, 'intro': page.intro, 'order': page.order, 'id': page.id, 'cover': host + page.thumb.url, 'time': page.time_display.strftime( '%Y-%m-%d' )})
+		data.append({'title': page.title, 'intro': page.intro, 'order': page.order, 'id': page.id, 'cover': 'https://'+host+page.thumb.url, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'view_times': page.view_times, 'zan_times': page.zan_times})
 	result = {'data': data}
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
