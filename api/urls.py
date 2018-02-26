@@ -17,8 +17,6 @@ urlpatterns = [
 
     url(r'^pagedetail/(?P<page_id>\d+)/$', get_pagedetail),
 
-    url(r'^getPageDetail/$', get_pagedetail),
-
     url(r'^weixinLogin/$', weixin_login),
 
     url(r'^checkSession/$', check_session),

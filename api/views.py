@@ -67,10 +67,7 @@ def get_pages(request):
 
 def get_pagedetail(request, page_id):
 	page = get_object_or_404(Page, id=page_id)
-	host = request.get_host()
-	data = []
-	data.append({'title': page.title, 'intro': page.intro, 'order': page.order, 'id': page.id, 'cover': host + page.thumb.url, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'content': page.content })
-	result = {'data': data}
+	result = {'title': page.title, 'content': page.content, 'viewtime': page.view_times, 'time': page.time_display.strftime( '%Y-%m-%d' )}
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
 APP_ID = 'wxe986c48a87b379cd'
