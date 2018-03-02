@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from weixin import WXAPPAPI
 from common.utils.wxcrypt import WXBizDataCrypt
 # from datetime import datetime
-from vrmode.models import VRMode, VRBanner, PageType, Page, PAGE_STATUS_ACTIVE
+from vrmode.models import VRMode, VRBanner, PageType, Page, PAGE_STATUS_ACTIVE, PageComment
 from common import LOG
 
 def get_vrmodes(request):
@@ -67,6 +67,8 @@ def get_pages(request):
 
 def get_pagedetail(request, page_id):
 	page = get_object_or_404(Page, id=page_id)
+	page.view_times += 1
+	page.save()
 	result = {'title': page.title, 'content': page.content, 'viewtime': page.view_times, 'time': page.time_display.strftime( '%Y-%m-%d' )}
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
@@ -166,7 +168,42 @@ def get_session(request):
 	# codevalue = request.session[code]
 	return HttpResponse(json.dumps({'keys': request.session.keys(), 'codevalue': codevalue}), content_type='application/json')
 
+@csrf_exempt
+def add_page_comment(request):
+	page_id = request.POST['page_id']
+	page = Page.objects.get(id=page_id)
+	if page:
+		text = request.POST['text']
+		openid = request.POST['openid']
+		name = request.POST['name']
+		parent_id = request.POST['parent_id']
+		if parent_id:
+			parent = PageComment.objects.get(id=parent_id)
+			pageComment = PageComment.objects.create(openid=openid, name=name, page=page, text=text, parent=parent)
+			return HttpResponse(json.dumps({'status':0, 'msg': u'评论成功'}), content_type='application/json')
+		else:
+			pageComment = PageComment.objects.create(openid=openid, name=name, page=page, text=text)
+			return HttpResponse(json.dumps({'status':0, 'msg': u'评论成功'}), content_type='application/json')
+	else:
+		return HttpResponse(json.dumps({'status':-1, 'msg': u'没有对应的页面，评论失败'}), content_type='application/json')
 
-
+def get_page_comments(request):
+	index = int(request.GET.get('page', 1))
+	if index < 1:
+		index = 1
+	size = int(request.GET.get('size', 10))
+	if size < 1:
+		size = 10
+	page_id = request.GET.get('page_id')
+	page = Page.objects.get(id=page_id)
+	comments = PageComment.objects.filter(page=page).order_by('-create_time')[(index-1)*size:(index)*size]
+	data = []
+	for comment in comments.all():
+		commentdata = {'name': comment.name, 'text': comment.text, 'id': comment.id, 'create_time': comment.create_time.strftime( '%Y-%m-%d' ), 'parent': ''}
+		if comment.parent:
+			commentdata['parent']=comment.parent.name
+		data.append(commentdata)
+	result = {'data': data}
+	return HttpResponse(json.dumps(result), content_type='application/json')
 
 

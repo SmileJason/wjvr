@@ -16,6 +16,12 @@ def page_img_path(instance, filename):
 def vr_zip_path(instance, filename):
     return uuid_vrzip_path(filename, 'vrmode/')
 
+PAGE_STATUS_ACTIVE = '2'
+PAGE_STATUS = (
+    ('1', u'草稿'),
+    (PAGE_STATUS_ACTIVE, u'生效'),
+)
+
 class VRMode(models.Model):
     title = models.CharField(max_length=128, verbose_name=u'标题')
     intro = models.CharField(max_length=200, verbose_name=u'简介')
@@ -33,29 +39,6 @@ class VRMode(models.Model):
         return self.title
 
     __str__ = __unicode__
-
-class VRBanner(models.Model):
-    title = models.CharField(max_length=128, verbose_name=u'标题')
-    intro = models.CharField(max_length=200, verbose_name=u'简介')
-    cover = models.ImageField(verbose_name=u'封面', upload_to=vrbanner_img_path, help_text=u'轮播图片 640*320', null=False)
-    vrlink = models.CharField(max_length=128, verbose_name=u'文章链接', null=True, blank=True)
-    create_time = models.DateTimeField(verbose_name=u'创建时间', auto_now_add=True)
-
-    class Meta:
-        app_label = string_with_title('vrmode', u"页面管理")
-        verbose_name_plural = verbose_name = u'首页轮播'
-        ordering = ['-create_time']
-
-    def __unicode__(self):
-        return self.title
-
-    __str__ = __unicode__
-
-PAGE_STATUS_ACTIVE = '2'
-PAGE_STATUS = (
-    ('1', u'草稿'),
-    (PAGE_STATUS_ACTIVE, u'生效'),
-)
 
 class PageType(models.Model):
     name = models.CharField(verbose_name=u'标题名称', max_length=128)
@@ -97,4 +80,43 @@ class Page(models.Model):
 
     __str__ = __unicode__
 
+class PageComment(models.Model):
+    openid = models.CharField(max_length=100, verbose_name=u'用户openid')
+    name = models.CharField(max_length=100, verbose_name=u'用户名')
+    page = models.ForeignKey(Page, verbose_name=u'页面')
+    text = models.TextField(verbose_name=u'评论内容')
+    create_time = models.DateTimeField(u'创建时间', auto_now_add=True)
+
+    parent = models.ForeignKey('self', default=None, blank=True, null=True,
+                               verbose_name=u'引用')
+    # comment_name = models.CharField(max_length=100, verbose_name=u'回复用户名')
+
+    class Meta:
+        app_label = string_with_title('vrmode', u"页面管理")
+        verbose_name_plural = verbose_name = u'页面评论'
+        db_table = 'page_comment'
+        # app_label = string_with_title('vmaig_comments', u"评论管理")
+
+    def __unicode__(self):
+        return self.openid
+
+    __str__ = __unicode__
+
+class VRBanner(models.Model):
+    title = models.CharField(max_length=128, verbose_name=u'标题')
+    intro = models.CharField(max_length=200, verbose_name=u'简介')
+    cover = models.ImageField(verbose_name=u'封面', upload_to=vrbanner_img_path, help_text=u'轮播图片 640*320', null=False)
+    vrlink = models.CharField(max_length=128, verbose_name=u'文章链接', null=True, blank=True)
+    page = models.ForeignKey(Page, verbose_name=u'页面', null=True, blank=True)
+    create_time = models.DateTimeField(verbose_name=u'创建时间', auto_now_add=True)
+
+    class Meta:
+        app_label = string_with_title('vrmode', u"页面管理")
+        verbose_name_plural = verbose_name = u'首页轮播'
+        ordering = ['-create_time']
+
+    def __unicode__(self):
+        return self.title
+
+    __str__ = __unicode__
 

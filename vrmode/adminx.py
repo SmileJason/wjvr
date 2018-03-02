@@ -3,7 +3,7 @@ import os
 import shutil
 import zipfile
 import xadmin
-from vrmode.models import VRMode, VRBanner, PageType, Page
+from vrmode.models import VRMode, VRBanner, PageType, Page, PageComment
 from django.db import transaction
 from xadmin import views
 from common import LOG
@@ -106,5 +106,12 @@ class PageAdmin(object):
 	# change_form_template = './xadmin/vrmode/page/change_form.html'
 
 xadmin.site.register(Page, PageAdmin)
+
+class PageCommentAdmin(object):
+	list_display = ('openid', 'name', 'create_time')
+	search_fields = ('openid', 'name')
+	show_detail_fields = ['openid', ]
+
+xadmin.site.register(PageComment, PageCommentAdmin)
 
 
