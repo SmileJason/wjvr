@@ -171,13 +171,13 @@ def get_session(request):
 @csrf_exempt
 def add_page_comment(request):
 	try:
-		page_id = request.POST['pageid']
+		page_id = request.POST['index']
 		page = Page.objects.get(id=page_id)
 		text = request.POST['text']
 		openid = request.POST['openid']
 		name = request.POST['name']
 		parent_id = request.POST['parentid']
-		LOG.DEBUG('%d %s %s %s %d', page_id, text, openid, name, parent_id)
+		# LOG.DEBUG('%d %s %s %s %d', page_id, text, openid, name, parent_id)
 		if parent_id:
 			parent = PageComment.objects.get(id=parent_id)
 			pageComment = PageComment.objects.create(openid=openid, name=name, page=page, text=text, parent=parent)
