@@ -177,6 +177,7 @@ def add_page_comment(request):
 		openid = request.POST['openid']
 		name = request.POST['name']
 		parent_id = request.POST['parent_id']
+		LOG.DEBUG('%d %s %s %s %d', page_id, text, openid, name, parent_id)
 		if parent_id:
 			parent = PageComment.objects.get(id=parent_id)
 			pageComment = PageComment.objects.create(openid=openid, name=name, page=page, text=text, parent=parent)
