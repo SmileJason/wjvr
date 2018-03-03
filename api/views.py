@@ -9,6 +9,7 @@ from common.utils.wxcrypt import WXBizDataCrypt
 # from datetime import datetime
 from vrmode.models import VRMode, VRBanner, PageType, Page, PAGE_STATUS_ACTIVE, PageComment
 from vrauth.models import VRAuth
+from django.contrib.auth.hashers import make_password
 from common import LOG
 
 def get_vrmodes(request):
@@ -123,9 +124,9 @@ def weixin_login(request):
 						auth.wxname = nickname
 						auth.save()
 					else:
-						auth = VRAuth.objects.create(username=nickname, password='123456', wxname=nickname, wxcover=avatarurl)
+						auth = VRAuth.objects.create(username=nickname, password=make_password('123456'), wxname=nickname, wxcover=avatarurl, openid=openid)
 				except VRAuth.DoesNotExist:
-					auth = VRAuth.objects.create(username=nickname, password='123456', wxname=nickname, wxcover=avatarurl)
+					auth = VRAuth.objects.create(username=nickname, password=make_password('123456'), wxname=nickname, wxcover=avatarurl, openid=openid)
 				result = {'status':0, 'msg': u'登录成功', 'code': code, 'session_key': session_key, 'openid': openid}
 				return HttpResponse(json.dumps(result), content_type='application/json')
 			else:
