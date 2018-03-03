@@ -66,7 +66,7 @@ def get_pages(request):
 	data = []
 	for page in pages.all():
 		try:
-			fav = FavoritePage.objects.get(page=page, openid=openid)
+			fav = FavoritePage.objects.get(page=page, user__openid=openid)
 			data.append({'title': page.title, 'intro': page.intro, 'order': page.order, 'id': page.id, 'cover': 'https://'+host+page.thumb.url, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'view_times': page.view_times, 'favourite': True})
 		except FavoritePage.DoesNotExist:
 			data.append({'title': page.title, 'intro': page.intro, 'order': page.order, 'id': page.id, 'cover': 'https://'+host+page.thumb.url, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'view_times': page.view_times, 'favourite': False})
@@ -77,9 +77,9 @@ def get_pagedetail(request, page_id):
 	page = get_object_or_404(Page, id=page_id)
 	page.view_times += 1
 	page.save()
-	openid = request.GET.get('openid')
+	openid = request.GET.get('openid', 'x')
 	try:
-		fav = FavoritePage.objects.get(page=page, openid=openid)
+		fav = FavoritePage.objects.get(page=page, user__openid=wxid)
 		result = {'title': page.title, 'content': page.content, 'viewtime': page.view_times, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'favourite': True}
 		return HttpResponse(json.dumps(result), content_type='application/json')
 	except FavoritePage.DoesNotExist:
