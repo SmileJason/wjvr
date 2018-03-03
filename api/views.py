@@ -191,14 +191,21 @@ def add_page_comment(request):
 		openid = request.POST['openid']
 		name = request.POST['name']
 		parent_id = request.POST['parentid']
+		try:
+			auth = VRAuth.objects.get(openid=openid)
+			if auth:
+				if parent_id:
+					parent = PageComment.objects.get(id=parent_id)
+					pageComment = PageComment.objects.create(user=auth, page=page, text=text, parent=parent)
+					return HttpResponse(json.dumps({'status':0, 'msg': u'评论成功'}), content_type='application/json')
+				else:
+					pageComment = PageComment.objects.create(user=auth, page=page, text=text)
+					return HttpResponse(json.dumps({'status':0, 'msg': u'评论成功'}), content_type='application/json')
+			else:
+				return HttpResponse(json.dumps({'status':-1, 'msg': u'没有对应的用户，评论失败'}), content_type='application/json')
+		except VRAuth.DoesNotExist:
+			return HttpResponse(json.dumps({'status':-1, 'msg': u'没有对应的用户，评论失败'}), content_type='application/json')
 		# LOG.DEBUG('%d %s %s %s %d', page_id, text, openid, name, parent_id)
-		if parent_id:
-			parent = PageComment.objects.get(id=parent_id)
-			pageComment = PageComment.objects.create(openid=openid, name=name, page=page, text=text, parent=parent)
-			return HttpResponse(json.dumps({'status':0, 'msg': u'评论成功'}), content_type='application/json')
-		else:
-			pageComment = PageComment.objects.create(openid=openid, name=name, page=page, text=text)
-			return HttpResponse(json.dumps({'status':0, 'msg': u'评论成功'}), content_type='application/json')
 	except Page.DoesNotExist:
 		return HttpResponse(json.dumps({'status':-1, 'msg': u'没有对应的页面，评论失败'}), content_type='application/json')
 
@@ -215,9 +222,9 @@ def get_page_comments(request):
 		comments = PageComment.objects.filter(page=page).order_by('-create_time')[(index-1)*size:(index)*size]
 		data = []
 		for comment in comments.all():
-			commentdata = {'name': comment.name, 'text': comment.text, 'id': comment.id, 'create_time': comment.create_time.strftime( '%Y-%m-%d' ), 'parent': ''}
+			commentdata = {'name': comment.user.wxname, 'cover': comment.user.wxcover, 'openid': comment.user.openid, 'text': comment.text, 'id': comment.id, 'create_time': comment.create_time.strftime( '%Y-%m-%d' ), 'parent': ''}
 			if comment.parent:
-				commentdata['parent']=comment.parent.name
+				commentdata['parent']=comment.parent.user.wxname
 			data.append(commentdata)
 		result = {'status': 0, 'data': data}
 		return HttpResponse(json.dumps(result), content_type='application/json')
