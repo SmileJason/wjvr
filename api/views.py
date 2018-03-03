@@ -125,7 +125,7 @@ def weixin_login(request):
 					else:
 						auth = VRAuth.objects.create(username=nickname, password='123456', wxname=nickname, wxcover=avatarurl)
 				except VRAuth.DoesNotExist:
-					auth = VRAuth.objects.create(username=nickname, password1='123456', password2='123456', wxname=nickname, wxcover=avatarurl)
+					auth = VRAuth.objects.create(username=nickname, password='123456', wxname=nickname, wxcover=avatarurl)
 				result = {'status':0, 'msg': u'登录成功', 'code': code, 'session_key': session_key, 'openid': openid}
 				return HttpResponse(json.dumps(result), content_type='application/json')
 			else:
