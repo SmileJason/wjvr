@@ -28,16 +28,17 @@ xadmin.site.register(views.CommAdminView, GlobalSetting)
 
 class VRAuthAdmin(object):
     add_form = VRAuthCreationForm
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2')
-        }),
-    )
-    fieldsets = (
-        (u'基本信息', {'fields': ('username', 'password', 'email')}),
-        (u'权限', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
-        (u'时间信息', {'fields': ('last_login', 'date_joined')}),
-    )
+    # add_fieldsets = (
+    #     (None, {
+    #         'classes': ('wide',),
+    #         'fields': ('username', 'email', 'password1', 'password2')
+    #     }),
+    # )
+    # fieldsets = (
+    #     (u'基本信息', {'fields': ('username', 'password', 'email')}),
+    #     (u'权限', {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+    #     (u'时间信息', {'fields': ('last_login', 'date_joined')}),
+    #     (u'微信', {'fields': ('openid',)}),
+    # )
 # xadmin.site.unregister(Group)
 # xadmin.site.register(VRAuth, VRAuthAdmin)

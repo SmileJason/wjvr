@@ -8,6 +8,7 @@ from weixin import WXAPPAPI
 from common.utils.wxcrypt import WXBizDataCrypt
 # from datetime import datetime
 from vrmode.models import VRMode, VRBanner, PageType, Page, PAGE_STATUS_ACTIVE, PageComment
+from vrauth.models import VRAuth
 from common import LOG
 
 def get_vrmodes(request):
@@ -106,6 +107,8 @@ WXAPP_APPID = 'wxe986c48a87b379cd'
 @csrf_exempt
 def weixin_login(request):
 	code = request.POST['code']
+	nickname = request.POST['nickname']
+	avatarurl = request.POST['avatarurl']
 	if code:
 		try:
 			api = WXAPPAPI(appid=APP_ID, app_secret=APP_SECRET)
@@ -113,6 +116,16 @@ def weixin_login(request):
 			session_key = session_info.get('session_key')
 			openid = session_info.get('openid')
 			if session_key:
+				try:
+					auth = VRAuth.objects.get(openid=openid)
+					if auth:
+						auth.wxcover = avatarurl
+						auth.wxname = nickname
+						auth.save()
+					else:
+						auth = VRAuth.objects.create(username=nickname, password1='123456', password2='123456', wxname=nickname, wxcover=avatarurl)
+				except VRAuth.DoesNotExist:
+					auth = VRAuth.objects.create(username=nickname, password1='123456', password2='123456', wxname=nickname, wxcover=avatarurl)
 				result = {'status':0, 'msg': u'登录成功', 'code': code, 'session_key': session_key, 'openid': openid}
 				return HttpResponse(json.dumps(result), content_type='application/json')
 			else:

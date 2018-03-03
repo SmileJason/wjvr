@@ -23,5 +23,9 @@ class VRAuth(AbstractUser):
                            verbose_name=u'头像地址')
     intro = models.CharField(max_length=200, blank=True, null=True,
                              verbose_name=u'简介')
+    openid = models.CharField(max_length=200, blank=True, null=True,
+                             verbose_name=u'微信openid', unique=True)
+    wxname = models.CharField(max_length=200, blank=True, null=True, verbose_name=u'微信名称')
+    wxcover = models.CharField(max_length=200, blank=True, null=True, verbose_name=u'微信头像')
 
 
