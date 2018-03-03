@@ -9,6 +9,7 @@ from common.utils.wxcrypt import WXBizDataCrypt
 # from datetime import datetime
 from vrmode.models import VRMode, VRBanner, PageType, Page, PAGE_STATUS_ACTIVE, PageComment
 from vrauth.models import VRAuth
+from favourite.models import FavoritePage
 from django.contrib.auth.hashers import make_password
 from common import LOG
 
@@ -54,6 +55,7 @@ def get_pagetypes(request):
 def get_pages(request):
 	host = request.get_host()
 	type = request.GET.get('type')
+	openid = request.GET.get('openid', 'x')
 	page = int(request.GET.get('page', 1))
 	if page < 1:
 		page = 1
@@ -63,7 +65,11 @@ def get_pages(request):
 	pages = Page.objects.filter(status=PAGE_STATUS_ACTIVE, type__id=type).order_by('order')[(page-1)*size:(page)*size]
 	data = []
 	for page in pages.all():
-		data.append({'title': page.title, 'intro': page.intro, 'order': page.order, 'id': page.id, 'cover': 'https://'+host+page.thumb.url, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'view_times': page.view_times, 'zan_times': page.zan_times})
+		try:
+			fav = FavoritePage.objects.get(page=page, openid=openid)
+			data.append({'title': page.title, 'intro': page.intro, 'order': page.order, 'id': page.id, 'cover': 'https://'+host+page.thumb.url, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'view_times': page.view_times, 'favourite': True})
+		except FavoritePage.DoesNotExist:
+			data.append({'title': page.title, 'intro': page.intro, 'order': page.order, 'id': page.id, 'cover': 'https://'+host+page.thumb.url, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'view_times': page.view_times, 'favourite': False})
 	result = {'data': data}
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
@@ -71,8 +77,14 @@ def get_pagedetail(request, page_id):
 	page = get_object_or_404(Page, id=page_id)
 	page.view_times += 1
 	page.save()
-	result = {'title': page.title, 'content': page.content, 'viewtime': page.view_times, 'time': page.time_display.strftime( '%Y-%m-%d' )}
-	return HttpResponse(json.dumps(result), content_type='application/json')
+	openid = request.GET.get('openid')
+	try:
+		fav = FavoritePage.objects.get(page=page, openid=openid)
+		result = {'title': page.title, 'content': page.content, 'viewtime': page.view_times, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'favourite': True}
+		return HttpResponse(json.dumps(result), content_type='application/json')
+	except FavoritePage.DoesNotExist:
+		result = {'title': page.title, 'content': page.content, 'viewtime': page.view_times, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'favourite': False}
+		return HttpResponse(json.dumps(result), content_type='application/json')
 
 APP_ID = 'wxe986c48a87b379cd'
 APP_SECRET = 'b842244b87187fa7f98827619d5b3d4c'
@@ -214,9 +226,9 @@ def get_page_comments(request):
 		index = int(request.GET.get('page', 1))
 		if index < 1:
 			index = 1
-		size = int(request.GET.get('size', 10))
+		size = int(request.GET.get('size', 100))
 		if size < 1:
-			size = 10
+			size = 100
 		page_id = request.GET.get('page_id')
 		page = Page.objects.get(id=page_id)
 		comments = PageComment.objects.filter(page=page).order_by('-create_time')[(index-1)*size:(index)*size]
