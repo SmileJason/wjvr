@@ -79,7 +79,7 @@ def get_pagedetail(request, page_id):
 	page.save()
 	openid = request.GET.get('openid', 'x')
 	try:
-		fav = FavoritePage.objects.get(page=page, user__openid=wxid)
+		fav = FavoritePage.objects.get(page=page, user__openid=openid)
 		result = {'title': page.title, 'content': page.content, 'viewtime': page.view_times, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'favourite': True}
 		return HttpResponse(json.dumps(result), content_type='application/json')
 	except FavoritePage.DoesNotExist:
