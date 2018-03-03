@@ -96,7 +96,7 @@ class PageComment(models.Model):
         # app_label = string_with_title('vmaig_comments', u"评论管理")
 
     def __unicode__(self):
-        return self.user.wxname
+        return self.text
 
     __str__ = __unicode__
 
