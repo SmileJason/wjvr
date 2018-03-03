@@ -108,9 +108,9 @@ class PageAdmin(object):
 xadmin.site.register(Page, PageAdmin)
 
 class PageCommentAdmin(object):
-	list_display = ('openid', 'name', 'create_time')
-	search_fields = ('openid', 'name')
-	show_detail_fields = ['openid', ]
+	list_display = ('user', 'create_time')
+	search_fields = ('user', )
+	show_detail_fields = ['user', ]
 
 xadmin.site.register(PageComment, PageCommentAdmin)
 

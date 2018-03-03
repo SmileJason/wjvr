@@ -3,6 +3,7 @@ from django.db import models
 from vrauth.models import string_with_title
 from DjangoUeditor.models import UEditorField
 from common.utils.images import get_image, uuid_image_path, uuid_vrzip_path
+from vrauth.models import VRAuth
 
 def vrmode_img_path(instance, filename):
     return uuid_image_path(filename, 'vrmode/')
@@ -81,15 +82,12 @@ class Page(models.Model):
     __str__ = __unicode__
 
 class PageComment(models.Model):
-    openid = models.CharField(max_length=100, verbose_name=u'用户openid')
-    name = models.CharField(max_length=100, verbose_name=u'用户名')
+    user = models.ForeignKey(VRAuth, verbose_name=u'用户', null=True)
     page = models.ForeignKey(Page, verbose_name=u'页面')
     text = models.TextField(verbose_name=u'评论内容')
     create_time = models.DateTimeField(u'创建时间', auto_now_add=True)
-
     parent = models.ForeignKey('self', default=None, blank=True, null=True,
                                verbose_name=u'引用')
-    # comment_name = models.CharField(max_length=100, verbose_name=u'回复用户名')
 
     class Meta:
         app_label = string_with_title('vrmode', u"页面管理")
@@ -98,7 +96,7 @@ class PageComment(models.Model):
         # app_label = string_with_title('vmaig_comments', u"评论管理")
 
     def __unicode__(self):
-        return self.openid
+        return self.user.wxname
 
     __str__ = __unicode__
 
