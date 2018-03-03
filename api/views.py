@@ -132,7 +132,7 @@ def weixin_login(request):
 				result = {'status':-1, 'msg': u'无法获取session_key,登录失败'}
 				return HttpResponse(json.dumps(result), content_type='application/json')
 		except Exception, e:
-			result = {'status':-1, 'msg': u'code参数不正确,登录失败'}
+			result = {'status':-1, 'msg': u'code参数不正确,登录失败.'}
 			return HttpResponse(json.dumps(result), content_type='application/json')
 	else:
 		result = {'status': -1, 'msg': u'code参数不正确,登录失败'}
