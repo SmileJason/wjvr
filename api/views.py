@@ -272,3 +272,15 @@ def get_favourite_pages(request):
 	result = {'status': 0, 'data': data}
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+def init_mine(request):
+	openid = request.GET.get('openid', 'x')
+	favs = FavoritePage.objects.filter(user__openid=openid)
+	if favs:
+		result = {'status': 0, 'length': len(favs)}
+		return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		result = {'status': 0, 'length': 0}
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+
+
