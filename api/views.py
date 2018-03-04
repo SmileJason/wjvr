@@ -78,7 +78,7 @@ def get_pagedetail(request, page_id):
 	page.view_times += 1
 	page.save()
 	openid = request.GET.get('openid', 'x')
-	fav = FavoritePage.objects.filter(page=page, user__openid=openid)[:1]
+	fav = FavoritePage.objects.filter(page__id=page_id, user__openid=openid)[:1]
 	if fav:
 		result = {'title': page.title, 'content': page.content, 'viewtime': page.view_times, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'favourite': True}
 		return HttpResponse(json.dumps(result), content_type='application/json')
