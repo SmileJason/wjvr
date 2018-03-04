@@ -251,12 +251,12 @@ def favourite_page(request):
 		try:
 			fav = FavoritePage.objects.get(page=page, user__openid=openid)
 			fav.delete()
-			result = {'status': 0, 'msg': u'取消收藏'}
+			result = {'status': 0, 'msg': u'取消收藏', 'fav': False}
 			return HttpResponse(json.dumps(result), content_type='application/json')
 		except FavoritePage.DoesNotExist:
 			user = VRAuth.objects.get(openid=openid)
 			fav = FavoritePage.objects.create(page=page, user=user)
-			result = {'status': 0, 'msg': u'收藏成功'}
+			result = {'status': 0, 'msg': u'收藏成功', 'fav': True}
 			return HttpResponse(json.dumps(result), content_type='application/json')
 	except Page.DoesNotExist:
 		result = {'status': -1, 'msg': u'没有对应的页面，收藏失败'}
