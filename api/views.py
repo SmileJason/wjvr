@@ -243,4 +243,32 @@ def get_page_comments(request):
 	except Page.DoesNotExist:
 		return HttpResponse(json.dumps({'status':-1, 'msg': u'没有对应的页面，评论失败'}), content_type='application/json')
 
+def favourite_page(request):
+	openid = request.GET.get('openid', 'x')
+	page_id = request.GET.get('pageid', 0)
+	try:
+		page = Page.objects.get(id=page_id)
+		try:
+			fav = FavoritePage.objects.get(page=page, user__openid=openid)
+			fav.delete()
+			result = {'status': 0, 'msg': u'取消收藏'}
+			return HttpResponse(json.dumps(result), content_type='application/json')
+		except FavoritePage.DoesNotExist:
+			user = VRAuth.objects.get(openid=openid)
+			fav = FavoritePage.objects.create(page=page, user=user)
+			result = {'status': 0, 'msg': u'收藏成功'}
+			return HttpResponse(json.dumps(result), content_type='application/json')
+	except Page.DoesNotExist:
+		result = {'status': -1, 'msg': u'没有对应的页面，收藏失败'}
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def get_favourite_pages(request):
+	host = request.get_host()
+	openid = request.GET.get('openid', 'x')
+	favs = FavoritePage.objects.filter(user__openid=openid)
+	data = []
+	for fav in favs:
+		data.append({'title': fav.page.title, 'intro': fav.page.intro, 'order': fav.page.order, 'id': fav.page.id, 'cover': 'https://'+host+fav.page.thumb.url, 'time': fav.page.time_display.strftime( '%Y-%m-%d' ), 'view_times': fav.page.view_times, 'favourite': True})
+	result = {'status': 0, 'data': data}
+	return HttpResponse(json.dumps(result), content_type='application/json')
 

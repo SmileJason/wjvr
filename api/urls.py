@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from api.views import get_vrmodes, get_banners, get_pagetypes, get_pages, get_pagedetail, weixin_login, check_session, check_post, set_session, get_session, get_page_comments, add_page_comment
+from api.views import get_vrmodes, get_banners, get_pagetypes, get_pages, get_pagedetail, weixin_login, check_session, check_post, set_session, get_session, get_page_comments, add_page_comment, favourite_page, get_favourite_pages
 
 urlpatterns = [
 
@@ -30,5 +30,9 @@ urlpatterns = [
     url(r'^getPageComments/$', get_page_comments),
 
     url(r'^addPageComment/$', add_page_comment),
+
+    url(r'^favouritePage/$', favourite_page),
+
+    url(r'^getFavouritePages/$', get_favourite_pages),
 
 ]
