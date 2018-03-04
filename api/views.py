@@ -34,10 +34,13 @@ def get_banners(request):
 	banners = VRBanner.objects.all()[:4]
 	data = []
 	for vr in banners.all():
+		obj = {'cover': 'https://'+host+vr.cover.url, 'title': vr.title, 'intro': vr.intro}
+		if vr.vrlink:
+			obj['vrlink'] = 'https://'+host+vr.vrlink
 		if vr.page:
-			data.append({'cover': 'https://'+host+vr.cover.url, 'title': vr.title, 'intro': vr.intro, 'vrlink': 'https://'+host+vr.vrlink, 'pageid': vr.page.id})
-		else:
-			data.append({'cover': 'https://'+host+vr.cover.url, 'title': vr.title, 'intro': vr.intro, 'vrlink': 'https://'+host+vr.vrlink})
+			obj['pageid'] = vr.page.id
+			# data.append({'cover': 'https://'+host+vr.cover.url, 'title': vr.title, 'intro': vr.intro, 'vrlink': 'https://'+host+vr.vrlink})
+		data.append(obj)
 	result = {'data': data}
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
