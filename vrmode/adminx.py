@@ -12,7 +12,7 @@ class VRModeAdmin(object):
 	list_display = ('title', 'intro')
 	search_fields = ('title', 'intro')
 	fieldsets = (
-		(u'基本信息', {'fields': ('title', 'intro', 'create_time')}),
+		(u'基本信息', {'fields': ('title', 'intro', 'create_time', 'tag1', 'tag2')}),
 		(u'文件管理', {'fields': ('cover', 'vrzip', 'vrlink')}),
 	)
 	show_detail_fields = ['title', ]
