@@ -28,4 +28,17 @@ class VRAuth(AbstractUser):
     wxname = models.CharField(max_length=200, blank=True, null=True, verbose_name=u'微信名称')
     wxcover = models.CharField(max_length=200, blank=True, null=True, verbose_name=u'微信头像')
 
+class FixtureOrder(models.Model):
+    username = models.CharField(max_length=128, verbose_name=u'客户姓名')
+    mobile = models.CharField(max_length=128, verbose_name=u'电话')
+    info = models.TextField(verbose_name=u'客户意向')
+    
+    class Meta:
+        verbose_name_plural = verbose_name = u'装修预约'
+
+    def __unicode__(self):
+        return self.username
+
+    __str__ = __unicode__
+
 

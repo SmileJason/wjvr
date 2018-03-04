@@ -2,7 +2,7 @@
 import xadmin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
-from vrauth.models import VRAuth
+from vrauth.models import VRAuth, FixtureOrder
 from vrauth.forms import VRAuthCreationForm
 from xadmin import views
 
@@ -42,3 +42,9 @@ class VRAuthAdmin(object):
     # )
 # xadmin.site.unregister(Group)
 # xadmin.site.register(VRAuth, VRAuthAdmin)
+
+
+class FixtureOrderAdmin(object):
+    list_display = ('username', 'mobile', 'info')
+
+xadmin.site.register(FixtureOrder, FixtureOrderAdmin)
