@@ -57,6 +57,7 @@ INSTALLED_APPS = (
     'vrmode',
     'api',
     'favourite',
+    'community',
 )
 
 MIDDLEWARE_CLASSES = (

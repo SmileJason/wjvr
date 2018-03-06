@@ -10,6 +10,7 @@ from common.utils.wxcrypt import WXBizDataCrypt
 from vrmode.models import VRMode, VRBanner, PageType, Page, PAGE_STATUS_ACTIVE, PageComment
 from vrauth.models import VRAuth
 from favourite.models import FavoritePage
+from community.models import PublishType, Publish, PublishComment, PUBLISH_STATUS_ACTIVE
 from django.contrib.auth.hashers import make_password
 from common import LOG
 
@@ -281,6 +282,47 @@ def init_mine(request):
 	else:
 		result = {'status': 0, 'length': 0}
 		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def init_publish(request):
+	types = PublishType.objects.filter(status=PUBLISH_STATUS_ACTIVE).order_by('order')[:5]
+	data = []
+	for type in types:
+		data.append({'name': type.name, 'order': type.order})
+	publishs = Publish.objects.filter(type__status=PUBLISH_STATUS_ACTIVE)
+	comments = PublishComment.objects.all()
+	result = {'types': data, 'article_count': len(publishs), 'comment_count': len(comments)}
+	return HttpResponse(json.dumps(result), content_type='application/json')
+
+def get_publishs(request):
+	host = request.get_host()
+	type = request.GET.get('type')
+	openid = request.GET.get('openid', '')
+	page = int(request.GET.get('page', 1))
+	if page < 1:
+		page = 1
+	size = int(request.GET.get('size', 5))
+	if size < 1:
+		size = 1
+	publishs = ''
+	if openid != '':
+		publishs = Publish.objects.filter(user__openid=openid, type__id=type).order_by('-create_time')[(page-1)*size:(page)*size]
+	else :
+		publishs = Publish.objects.filter(type__id=type).order_by('-create_time')[(page-1)*size:(page)*size]
+	data = []
+	for publish in publishs.all():
+		comments = PublishComment.objects.filter(publish=publish)
+		pdata = {'title': publish.title, 'content': publish.content, 'username': publish.user.wxname, 'cover': publish.user.wxcover, 'pic1': '', 'pic2': '', 'pic3': '', 'pic4': '', 'time': publish.create_time.strftime( '%Y-%m-%d' )}
+		if publish.pic1:
+			pdata['pic1'] = 'https://'+host+publish.pic1.url
+		if publish.pic2:
+			pdata['pic2'] = 'https://'+host+publish.pic2.url
+		if publish.pic3:
+			pdata['pic3'] = 'https://'+host+publish.pic3.url
+		if publish.pic4:
+			pdata['pic4'] = 'https://'+host+publish.pic4.url
+		data.append(pdata)
+	result = {'data': data}
+	return HttpResponse(json.dumps(result), content_type='application/json')
 
 
 
