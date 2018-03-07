@@ -361,7 +361,8 @@ def add_publish(request):
 	content = request.POST['content']
 	categoryId = request.POST['category_id']
 	imgs = request.POST['imgs']
-	if title and content and categoryId:
+	openid = request.POST['openid']
+	if title and content and categoryId and openid:
 		# LOG.info(imgs)
 		pic1 = ''
 		pic2 = ''
@@ -376,7 +377,8 @@ def add_publish(request):
 		if len(imgs)>=4:
 			pic4 = imgs[3]
 		type = PublishType.objects.get(id=categoryId)
-		publish = Publish.objects.create(title=title, content=content, type=type, pic1=pic1, pic2=pic2, pic3=pic3, pic4=pic4)
+		user = Auth.objects.get(openid=openid)
+		publish = Publish.objects.create(user=user, title=title, content=content, type=type, pic1=pic1, pic2=pic2, pic3=pic3, pic4=pic4)
 		result = {'status': 0, 'msg': u'发布成功'}
 		return HttpResponse(json.dumps(result), content_type='application/json')
 	else :
