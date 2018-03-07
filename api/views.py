@@ -361,7 +361,7 @@ def add_publish(request):
 	content = request.POST['content']
 	categoryId = request.POST['category_id']
 	imgs = request.POST['imgs']
-	if title & content & categoryId:
+	if title and content and categoryId:
 		LOG.info(imgs)
 		# publish = Publish.objects.create(title=title, content=content, type__id=categoryId)
 		result = {'status': 0, 'msg': u'发布成功'}
