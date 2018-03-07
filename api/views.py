@@ -354,3 +354,21 @@ def image_delete(request, image_id):
         return HttpResponse(json.dumps({'status':0, 'message':'success', 'id': image_id}), content_type='application/json')
     else:
         return HttpResponse(json.dumps({'status':-1, 'message':'fail', 'id': image_id}), content_type='application/json')
+
+@csrf_exempt
+def add_publish(request):
+	title = request.POST['title']
+	content = request.POST['content']
+	categoryId = request.POST['category_id']
+	imgs = request.POST['imgs']
+	if title & content & categoryId:
+		LOG.info(imgs)
+		# publish = Publish.objects.create(title=title, content=content, type__id=categoryId)
+		result = {'status': 0, 'msg': u'发布成功'}
+		return HttpResponse(json.dumps(result), content_type='application/json')
+	else :
+		result = {'status': 1, 'msg': u'数据异常，发布失败'}
+		return HttpResponse(json.dumps(result), content_type='application/json')		
+
+
+
