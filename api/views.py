@@ -375,7 +375,8 @@ def add_publish(request):
 			pic3 = imgs[2]
 		if len(imgs)>=4:
 			pic4 = imgs[3]
-		publish = Publish.objects.create(title=title, content=content, type__id=categoryId, pic1=pic1, pic2=pic2, pic3=pic3, pic4=pic4)
+		type = PublishType.objects.get(id=categoryId)
+		publish = Publish.objects.create(title=title, content=content, type=type, pic1=pic1, pic2=pic2, pic3=pic3, pic4=pic4)
 		result = {'status': 0, 'msg': u'发布成功'}
 		return HttpResponse(json.dumps(result), content_type='application/json')
 	else :
