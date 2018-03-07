@@ -62,3 +62,21 @@ class PublishComment(models.Model):
         return self.text
 
     __str__ = __unicode__
+
+PREVIEW_SIZES = {'01': 150, '02': 356, '1': 690}
+class PublishImage(models.Model):
+    publish = models.ForeignKey(Publish, verbose_name=u'话题', null=True, blank=True)
+    file = models.ImageField(u'话题图片', upload_to=publish_img_path)
+
+    def preview_admin(self):
+        if self.type in PREVIEW_SIZES:
+            return '<a target="_blank" href="%(url)s"><img style="border:1px solid #ccc;padding:2px;max-width:150px;" src="%(url)s"/></a>' % {'url': get_image(self.file, 150)}
+        return ''
+    preview_admin.short_description = u'图片预览'
+    preview_admin.allow_tags = True
+    
+    class Meta:
+        verbose_name_plural = verbose_name = u'话题图片'
+    
+    def __unicode__(self):
+        return os.path.basename(self.file.name)

@@ -3,6 +3,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 import simplejson as json
+from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 from weixin import WXAPPAPI
 from common.utils.wxcrypt import WXBizDataCrypt
@@ -10,8 +11,9 @@ from common.utils.wxcrypt import WXBizDataCrypt
 from vrmode.models import VRMode, VRBanner, PageType, Page, PAGE_STATUS_ACTIVE, PageComment
 from vrauth.models import VRAuth
 from favourite.models import FavoritePage
-from community.models import PublishType, Publish, PublishComment, PUBLISH_STATUS_ACTIVE
+from community.models import PublishType, Publish, PublishComment, PUBLISH_STATUS_ACTIVE, PublishImage
 from django.contrib.auth.hashers import make_password
+from common.utils.images import get_image, uuid_image_path
 from common import LOG
 
 def get_vrmodes(request):
@@ -287,7 +289,7 @@ def init_publish(request):
 	types = PublishType.objects.filter(status=PUBLISH_STATUS_ACTIVE).order_by('order')[:5]
 	data = []
 	for type in types:
-		data.append({'name': type.name, 'order': type.order})
+		data.append({'id': type.id, 'name': type.name, 'order': type.order})
 	publishs = Publish.objects.filter(type__status=PUBLISH_STATUS_ACTIVE)
 	comments = PublishComment.objects.all()
 	result = {'types': data, 'article_count': len(publishs), 'comment_count': len(comments)}
@@ -303,7 +305,7 @@ def get_publishs(request):
 	size = int(request.GET.get('size', 5))
 	if size < 1:
 		size = 1
-	publishs = ''
+	publishs = []
 	if openid != '':
 		publishs = Publish.objects.filter(user__openid=openid, type__id=type).order_by('-create_time')[(page-1)*size:(page)*size]
 	else :
@@ -311,7 +313,7 @@ def get_publishs(request):
 	data = []
 	for publish in publishs.all():
 		comments = PublishComment.objects.filter(publish=publish)
-		pdata = {'title': publish.title, 'content': publish.content, 'username': publish.user.wxname, 'cover': publish.user.wxcover, 'pic1': '', 'pic2': '', 'pic3': '', 'pic4': '', 'time': publish.create_time.strftime( '%Y-%m-%d' )}
+		pdata = {'id': publish.id, 'title': publish.title, 'content': publish.content, 'username': publish.user.wxname, 'cover': publish.user.wxcover, 'pic1': '', 'pic2': '', 'pic3': '', 'pic4': '', 'time': publish.create_time.strftime( '%Y-%m-%d' )}
 		if publish.pic1:
 			pdata['pic1'] = 'https://'+host+publish.pic1.url
 		if publish.pic2:
@@ -324,5 +326,28 @@ def get_publishs(request):
 	result = {'data': data}
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
+@csrf_exempt
+@transaction.atomic
+def image_upload(request):
+    file = request.FILES['img_data']
+    fname, ext = os.path.splitext(file.name)
+    if ext.lower() not in ('.jpg', '.jpeg', '.png', '.bmp'):
+        return HttpResponseBadRequest(f.name)
+    new_image = PublishImage.objects.create(
+                    file = File(file),
+                )
+    tmp = Image.open(new_image.file.path)
+    ImageFile.MAXBLOCK = tmp.size[0] * tmp.size[1]
+    tmp.save(new_image.file.path, quality=95, optimize=True)
+    return HttpResponse(json.dumps({'status':0, 'src': new_image.file.url, 'msg': '', 'id': new_image.id}), content_type='application/json')
 
-
+@transaction.atomic
+def image_delete(request, image_id):
+    image = get_object_or_404(PublishImage, id=image_id)
+    file = image.file.path
+    if os.path.exists(file):
+        os.remove(file)
+        image.delete()
+        return HttpResponse(json.dumps({'status':0, 'message':'success', 'id': image_id}), content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({'status':-1, 'message':'fail', 'id': image_id}), content_type='application/json')
