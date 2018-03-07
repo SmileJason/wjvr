@@ -360,26 +360,15 @@ def add_publish(request):
 	title = request.POST['title']
 	content = request.POST['content']
 	categoryId = request.POST['category_id']
-	imgs = request.POST['imgs']
 	openid = request.POST['openid']
 	if title and content and categoryId and openid:
-		imgs = imgs.split(',')
-		LOG.info(imgs[0])
-		# pic1 = ''
-		# pic2 = ''
-		# pic3 = ''
-		# pic4 = ''
-		# if len(imgs)>=1:
-		# 	pic1 = imgs[0]
-		# if len(imgs)>=2:
-		# 	pic2 = imgs[1]
-		# if len(imgs)>=3:
-		# 	pic3 = imgs[2]
-		# if len(imgs)>=4:
-		# 	pic4 = imgs[3]
-		# type = PublishType.objects.get(id=categoryId)
-		# user = VRAuth.objects.get(openid=openid)
-		# publish = Publish.objects.create(user=user, title=title, content=content, type=type, pic1=pic1, pic2=pic2, pic3=pic3, pic4=pic4)
+		pic1 = request.POST['pic1']
+		pic2 = request.POST['pic2']
+		pic3 = request.POST['pic3']
+		pic4 = request.POST['pic4']
+		type = PublishType.objects.get(id=categoryId)
+		user = VRAuth.objects.get(openid=openid)
+		publish = Publish.objects.create(user=user, title=title, content=content, type=type, pic1=pic1, pic2=pic2, pic3=pic3, pic4=pic4)
 		result = {'status': 0, 'msg': u'发布成功'}
 		return HttpResponse(json.dumps(result), content_type='application/json')
 	else :
