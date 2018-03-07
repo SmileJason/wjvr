@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
-from api.views import get_vrmodes, get_banners, get_pagetypes, get_pages, get_pagedetail, weixin_login, check_session, check_post, set_session, get_session, get_page_comments, add_page_comment, favourite_page, get_favourite_pages, init_mine, init_publish, get_publishs
+from api.views import get_vrmodes, get_banners, get_pagetypes, get_pages, get_pagedetail, weixin_login, check_session, check_post, set_session, get_session, get_page_comments, add_page_comment, favourite_page, get_favourite_pages, init_mine, init_publish, get_publishs, image_upload, image_delete
 
 
 urlpatterns = [
@@ -41,6 +41,10 @@ urlpatterns = [
     url(r'^initPublish/$', init_publish),
 
     url(r'^getPublishs/$', get_publishs),
+
+    url(r'^imageupload/$', image_upload),
+
+    url(r'^image/(?P<image_id>\d+)/delete/$', image_delete),
 
     # url(r'^addPublishComment/$', add_publish_comment),
 
