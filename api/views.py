@@ -2,6 +2,7 @@
 
 import os
 from django.core.files import File
+from PIL import Image, ImageFile
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 import simplejson as json
