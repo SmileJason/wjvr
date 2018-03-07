@@ -317,14 +317,20 @@ def get_publishs(request):
 	for publish in publishs.all():
 		comments = PublishComment.objects.filter(publish=publish)
 		pdata = {'id': publish.id, 'title': publish.title, 'content': publish.content, 'username': publish.user.wxname, 'cover': publish.user.wxcover, 'pic1': '', 'pic2': '', 'pic3': '', 'pic4': '', 'time': publish.create_time.strftime( '%Y-%m-%d' )}
+		imgs = []
 		if publish.pic1:
-			pdata['pic1'] = 'https://'+host+publish.pic1.url
+			imgs.append('https://'+host+publish.pic1.url)
+			# pdata['pic1'] = 'https://'+host+publish.pic1.url
 		if publish.pic2:
-			pdata['pic2'] = 'https://'+host+publish.pic2.url
+			imgs.append('https://'+host+publish.pic2.url)
+			# pdata['pic2'] = 'https://'+host+publish.pic2.url
 		if publish.pic3:
-			pdata['pic3'] = 'https://'+host+publish.pic3.url
+			imgs.append('https://'+host+publish.pic3.url)
+			# pdata['pic3'] = 'https://'+host+publish.pic3.url
 		if publish.pic4:
-			pdata['pic4'] = 'https://'+host+publish.pic4.url
+			imgs.append('https://'+host+publish.pic4.url)
+			# pdata['pic4'] = 'https://'+host+publish.pic4.url
+		pdata['imgs'] = imgs
 		data.append(pdata)
 	result = {'data': data}
 	return HttpResponse(json.dumps(result), content_type='application/json')
