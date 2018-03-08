@@ -50,7 +50,7 @@ urlpatterns = [
 
     url(r'^addPublishComment/$', add_publish_comment),
 
-    url(r'^addPublishDetail/$', get_publish_detail),
+    url(r'^getPublishDetail/$', get_publish_detail),
 
     url(r'^getPublishComments/$', get_publish_comments),
 
