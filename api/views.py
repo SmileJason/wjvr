@@ -293,8 +293,8 @@ def init_publish(request):
 	data = []
 	for type in types:
 		data.append({'id': type.id, 'name': type.name, 'order': type.order})
-	publishs = Publish.objects.filter(type__status=PUBLISH_STATUS_ACTIVE)
-	comments = PublishComment.objects.all()
+	publishs = Publish.objects.filter(type__status=PUBLISH_STATUS_ACTIVE, status=PUBLISH_STATUS_ACTIVE)
+	comments = PublishComment.objects.filter(publish__status=PUBLISH_STATUS_ACTIVE)
 	result = {'types': data, 'article_count': len(publishs), 'comment_count': len(comments)}
 	return HttpResponse(json.dumps(result), content_type='application/json')
 
@@ -312,7 +312,7 @@ def get_publishs(request):
 	if openid != '':
 		publishs = Publish.objects.filter(user__openid=openid, type__id=type).order_by('-create_time')[(page-1)*size:(page)*size]
 	else :
-		publishs = Publish.objects.filter(type__id=type).order_by('-create_time')[(page-1)*size:(page)*size]
+		publishs = Publish.objects.filter(type__id=type, status=PUBLISH_STATUS_ACTIVE).order_by('-create_time')[(page-1)*size:(page)*size]
 	data = []
 	for publish in publishs.all():
 		comments = PublishComment.objects.filter(publish=publish)

@@ -36,6 +36,7 @@ class Publish(models.Model):
     pic3 = models.ImageField(verbose_name=u'话题配图3', upload_to=publish_img_path, help_text=u'话题配图 300*300', null=True, blank=True)
     pic4 = models.ImageField(verbose_name=u'话题配图4', upload_to=publish_img_path, help_text=u'话题配图 300*300', null=True, blank=True)
     create_time = models.DateTimeField(verbose_name=u'创建时间', auto_now_add=True)
+    status = models.CharField(u'状态', choices=PUBLISH_STATUS, default='2', max_length=1)
 
     class Meta:
         verbose_name_plural = verbose_name = u'话题'

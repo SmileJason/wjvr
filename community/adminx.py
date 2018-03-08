@@ -7,7 +7,8 @@ from django.db import transaction
 from common import LOG
 
 class PublishAdmin(object):
-	list_display = ('title', 'type', 'content', 'user', 'create_time')
+	list_filter = ('status', )
+	list_display = ('title', 'type', 'content', 'user', 'create_time', 'status')
 	search_fields = ('title', )
 	show_detail_fields = ['title', ]
 
