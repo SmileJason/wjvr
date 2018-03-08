@@ -316,7 +316,7 @@ def get_publishs(request):
 	data = []
 	for publish in publishs.all():
 		comments = PublishComment.objects.filter(publish=publish)
-		pdata = {'id': publish.id, 'title': publish.title, 'content': publish.content, 'username': publish.user.wxname, 'cover': publish.user.wxcover, 'pic1': '', 'pic2': '', 'pic3': '', 'pic4': '', 'time': publish.create_time.strftime( '%Y-%m-%d' )}
+		pdata = {'id': publish.id, 'title': publish.title, 'content': publish.content, 'username': publish.user.wxname, 'cover': publish.user.wxcover, 'pic1': '', 'pic2': '', 'pic3': '', 'pic4': '', 'time': publish.create_time.strftime( '%Y-%m-%d' ), 'commentcount': len(comments)}
 		imgs = []
 		if publish.pic1:
 			imgs.append('https://'+host+publish.pic1.url)
@@ -379,7 +379,66 @@ def add_publish(request):
 		return HttpResponse(json.dumps(result), content_type='application/json')
 	else :
 		result = {'status': 1, 'msg': u'数据异常，发布失败'}
-		return HttpResponse(json.dumps(result), content_type='application/json')		
+		return HttpResponse(json.dumps(result), content_type='application/json')	
+
+@csrf_exempt
+def add_publish_comment(request):
+	content = request.POST['content']
+	publishId = request.POST['publishid']
+	openid = request.POST['openid']
+	if openid and publishId and content:
+		publish = Publish.objects.get(id=publishId)
+		user = VRAuth.objects.get(openid=openid)
+		publishcomment = PublishComment.objects.create(user=user, publish=publish, text=content)
+		result = {'status': 0, 'msg': u'发布成功'}
+		return HttpResponse(json.dumps(result), content_type='application/json')
+	else :
+		result = {'status': 1, 'msg': u'数据异常，发布失败'}
+		return HttpResponse(json.dumps(result), content_type='application/json')
+
+def get_publish_detail(request):
+	host = request.get_host()
+	publishId = request.GET.get('publishid', '')
+	if publishId:
+		publish = Publish.objects.get(id=publishId)
+		if publish:
+			imgs = []
+			if publish.pic1:
+				imgs.append('https://'+host+publish.pic1.url)
+				# pdata['pic1'] = 'https://'+host+publish.pic1.url
+			if publish.pic2:
+				imgs.append('https://'+host+publish.pic2.url)
+				# pdata['pic2'] = 'https://'+host+publish.pic2.url
+			if publish.pic3:
+				imgs.append('https://'+host+publish.pic3.url)
+				# pdata['pic3'] = 'https://'+host+publish.pic3.url
+			if publish.pic4:
+				imgs.append('https://'+host+publish.pic4.url)
+				# pdata['pic4'] = 'https://'+host+publish.pic4.url
+			comments = PublishComment.objects.filter(publish__id=publishId)
+			data = []
+			for comment in comments.all():
+				commentdata = {'name': comment.user.wxname, 'cover': comment.user.wxcover, 'openid': comment.user.openid, 'text': comment.text, 'id': comment.id, 'create_time': comment.create_time.strftime( '%Y-%m-%d' )}
+				data.append(commentdata)
+			result = {'status': 0, 'comments': data, 'id': publish.id, 'title': publish.title, 'content': publish.content, 'username': publish.user.wxname, 'cover': publish.user.wxcover, 'pic1': '', 'pic2': '', 'pic3': '', 'pic4': '', 'time': publish.create_time.strftime( '%Y-%m-%d' ), 'imgs': imgs}
+			return HttpResponse(json.dumps(result), content_type='application/json')
+		else:
+			return HttpResponse(json.dumps({'status': 1, 'msg': u'没有对应的话题，数据异常'}), content_type='application/json')
+	else:
+		return HttpResponse(json.dumps({'status': 1, 'msg': u'没有对应的话题，数据异常'}), content_type='application/json')
+
+def get_publish_comments(request):
+	publishId = request.GET.get('publishid', '')
+	if publishId:
+		comments = PublishComment.objects.filter(publish__id=publishId)
+		data = []
+		for comment in comments.all():
+			commentdata = {'name': comment.user.wxname, 'cover': comment.user.wxcover, 'openid': comment.user.openid, 'text': comment.text, 'id': comment.id, 'create_time': comment.create_time.strftime( '%Y-%m-%d' )}
+			data.append(commentdata)
+		result = {'status': 0, 'data': data}
+		return HttpResponse(json.dumps(result), content_type='application/json')
+	else:
+		return HttpResponse(json.dumps({'status': 1, 'msg': u'没有对应的话题，数据异常'}), content_type='application/json')
 
 
 
