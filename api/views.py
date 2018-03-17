@@ -92,9 +92,14 @@ def get_pagedetail(request, page_id):
 		result = {'title': page.title, 'content': page.content, 'viewtime': page.view_times, 'time': page.time_display.strftime( '%Y-%m-%d' ), 'favourite': False}
 		return HttpResponse(json.dumps(result), content_type='application/json')
 
-APP_ID = 'wxe986c48a87b379cd'
-APP_SECRET = 'b842244b87187fa7f98827619d5b3d4c'
-WXAPP_APPID = 'wxe986c48a87b379cd'
+# APP_ID = 'wxe986c48a87b379cd'
+# APP_SECRET = 'b842244b87187fa7f98827619d5b3d4c'
+# WXAPP_APPID = 'wxe986c48a87b379cd'
+
+APP_ID = 'wx244fbff1a777667f'
+APP_SECRET = '24fee6a9d94fb8e7b83a1b82acdb0236'
+WXAPP_APPID = 'wx244fbff1a777667f'
+
 
 # @csrf_exempt
 # def weixin_login(request):
